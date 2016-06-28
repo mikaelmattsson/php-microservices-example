@@ -1,0 +1,58 @@
+version: '2'
+services:
+#
+# Load Balancer
+#
+  lb:
+    image: nginx:1.10.1
+    volumes:
+      - ./docker/lb/conf.d:/etc/nginx/conf.d
+      - ./var/lb/error/:/var/log/nginx
+    links:
+    - consul
+    ports:
+    - "80:80"
+    - "8181:8181"
+#
+# Service Discovery - Consul
+#
+  consul:
+    command: -server -bootstrap -advertise 10.0.2.15
+    image: progrium/consul:latest
+    ports:
+    - "8300:8300"
+    - "8400:8400"
+    - "8500:8500"
+    - "8600:53/udp"
+#
+# Service Discovery - Registrator
+#
+  registrator:
+    command: -ip=10.0.2.15 consul://consul:8500
+    image: gliderlabs/registrator:latest
+    links:
+    - consul
+    volumes:
+    - "/var/run/docker.sock:/tmp/docker.sock"
+#
+# Frontend
+#
+  frontendwww:
+    image: nginx
+    volumes:
+      - ./docker/nginx/conf.d:/etc/nginx/conf.d
+      - ./var/frontendwww/error/:/var/log/nginx
+    volumes_from:
+      - frontendphp
+    links:
+      - frontendphp:php
+    ports:
+      - 80
+    environment:
+      SERVICE_PLATFORM: "exampleapp"
+      SERVICE_80_NAME: "frontendwww"
+      SERVICE_80_TAGS: "frontendwww,frontend"
+  frontendphp:
+    build: ./docker/php/dev
+    volumes:
+      - ./:/var/www/html/
