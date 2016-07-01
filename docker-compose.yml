@@ -1,58 +1,51 @@
-version: '2'
-services:
 #
-# Load Balancer
+# Support
 #
-  lb:
-    image: nginx:1.10.1
-    volumes:
-      - ./docker/lb/conf.d:/etc/nginx/conf.d
-      - ./var/lb/error/:/var/log/nginx
-    links:
-    - consul
-    ports:
-    - "80:80"
-    - "8181:8181"
-#
-# Service Discovery - Consul
-#
-  consul:
-    command: -server -bootstrap -advertise 10.0.2.15
-    image: progrium/consul:latest
-    ports:
-    - "8300:8300"
+consul:
+  command: -server -bootstrap
+  image: progrium/consul:latest
+  ports:
     - "8400:8400"
     - "8500:8500"
     - "8600:53/udp"
-#
-# Service Discovery - Registrator
-#
-  registrator:
-    command: -ip=10.0.2.15 consul://consul:8500
-    image: gliderlabs/registrator:latest
-    links:
-    - consul
-    volumes:
+
+registrator:
+  command: -ip=192.168.99.100 consul://consul:8500
+  image: gliderlabs/registrator:latest
+  volumes:
     - "/var/run/docker.sock:/tmp/docker.sock"
+  links:
+    - consul
+
+lb:
+  build: ./docker/lb
+  links:
+    - consul
+  ports:
+    - "80:80"
+  environment:
+    CONSUL_URL: consul:8500
+  volumes:
+    - ./docker/lb/consul-template:/etc/consul-template
+
 #
-# Frontend
+# Services
 #
-  frontendwww:
-    image: nginx
-    volumes:
-      - ./docker/nginx/conf.d:/etc/nginx/conf.d
-      - ./var/frontendwww/error/:/var/log/nginx
-    volumes_from:
-      - frontendphp
-    links:
-      - frontendphp:php
-    ports:
-      - 80
-    environment:
-      SERVICE_PLATFORM: "exampleapp"
-      SERVICE_80_NAME: "frontendwww"
-      SERVICE_80_TAGS: "frontendwww,frontend"
-  frontendphp:
-    build: ./docker/php/dev
-    volumes:
-      - ./:/var/www/html/
+frontendwww:
+  image: nginx:1.10.1
+  volumes:
+    - ./docker/php/nginx/conf.d:/etc/nginx/conf.d
+    - ./var/frontendwww/error/:/var/log/nginx
+  volumes_from:
+    - frontendphp
+  links:
+    - frontendphp:php
+  ports:
+    - "8080"
+  environment:
+    SERVICE_NAME: frontend
+    SERVICE_TAGS: production
+frontendphp:
+  build: ./docker/php/dev
+  volumes:
+    - ./services/frontend/:/var/www/html/

@@ -1,0 +1,38 @@
+server {
+  listen 65333;
+
+  location / {
+    types {
+      application/json json;
+    }
+    default_type "application/json";
+    return 501 '{
+      "success": false,
+      "deploy": false,
+      "status": 501,
+      "body": {
+        "message": "No available upstream servers at current route from consul"
+      }
+    }';
+  }
+}
+
+{{range services}}
+  {{ if .Tags.Contains "production" }}
+  upstream {{.Name}} {
+    least_conn;
+    {{range service .Name}}
+    server  {{.Address}}:{{.Port}} max_fails=3 fail_timeout=60 weight=1;
+    {{else}}server 127.0.0.1:65535;{{end}}
+  }
+  {{end}}
+{{end}}
+
+
+server {
+  listen 80;
+
+  location / {
+    proxy_pass http://frontend-8080;
+  }
+}
