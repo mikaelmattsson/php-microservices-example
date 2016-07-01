@@ -18,7 +18,7 @@ server {
 }
 
 {{range services}}
-  {{ if .Tags.Contains "production" }}
+  {{ if .Tags.Contains "backend" }}
   upstream {{.Name}} {
     least_conn;
     {{range service .Name}}
@@ -30,9 +30,9 @@ server {
 
 
 server {
-  listen 80;
+  listen 8081;
 
-  location / {
-    proxy_pass http://frontend-8080;
+  location /backend-service/inventory/ {
+    proxy_pass http://inventory-8080;
   }
 }
