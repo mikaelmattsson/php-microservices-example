@@ -8,12 +8,15 @@ nginx:
   links:
     - php:php
   ports:
-    - 8080
+    - 80
   environment:
-    SERVICE_NAME: inventory
+    SERVICE_80_NAME: inventory
     SERVICE_TAGS: backend
 
 php:
   build: ./docker/dev
   volumes:
     - ./:/var/www/html/
+  dns:
+    - 172.17.0.1 # consul
+    - 8.8.8.8

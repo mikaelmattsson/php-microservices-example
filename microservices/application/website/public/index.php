@@ -1,12 +1,26 @@
 <?php
 
 $hostname = getenv('HOSTNAME');
+$orderBackendUrl = 'http://'.getenv('SERVICE_URL_ORDER_BACKEND');
+$inventoryBackendUrl = 'http://'.getenv('SERVICE_URL_INVENTORY_BACKEND');
 
-echo "Hello world from website service ($hostname) <br><br> \n";
+$requests = [];
 
-echo "Response from inventory service:";
-echo "<pre>";
-echo file_get_contents('http://192.168.99.100:8081/backend-service/inventory');
-echo "</pre>";
+if (isset($_POST['createorder'])) {
+    $requests[] = [
+        'title'   => 'Response from order service (create)',
+        'content' => file_get_contents($orderBackendUrl.'create'),
+    ];
+}
 
+$requests[] = [
+    'title'   => 'Response from order service',
+    'content' => file_get_contents($orderBackendUrl),
+];
 
+$requests[] = [
+    'title'   => 'Response from inventory service',
+    'content' => file_get_contents($inventoryBackendUrl),
+];
+
+require_once "../resources/views/home.php";

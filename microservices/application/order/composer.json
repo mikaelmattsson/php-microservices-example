@@ -1,0 +1,15 @@
+{
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "config": {
+        "preferred-install": "dist"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\Order\\": "src/"
+        }
+    },
+    "require": {
+        "php-amqplib/php-amqplib": "~2.6"
+    }
+}

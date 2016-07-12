@@ -30,9 +30,20 @@ server {
 
 
 server {
-  listen 8081;
+  listen 8081 default_server;
 
-  location /backend-service/inventory/ {
-    proxy_pass http://inventory-8080;
+  {{range services}}
+    {{ if .Tags.Contains "backend" }}
+
+  location /backend-service/{{.Name}}/ {
+    proxy_pass http://{{.Name}};
+
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
   }
+
+    {{end}}
+  {{end}}
+
 }

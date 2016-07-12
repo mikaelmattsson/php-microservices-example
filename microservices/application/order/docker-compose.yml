@@ -10,16 +10,18 @@ nginx:
   ports:
     - 80
   environment:
-    SERVICE_80_NAME: website
-    SERVICE_TAGS: production
+    SERVICE_80_NAME: order
+    SERVICE_TAGS: backend
 
 php:
   build: ./docker/dev
   volumes:
     - ./:/var/www/html/
   environment:
-    SERVICE_URL_ORDER_BACKEND: lbbackend.service.consul:8081/backend-service/order/
-    SERVICE_URL_INVENTORY_BACKEND: lbbackend.service.consul:8081/backend-service/inventory/
+    RABBITMQ_URL: _rabbitmq._amqp.service.consul
+    RABBITMQ_PORT: 5672
+    RABBITMQ_DEFAULT_USER: user
+    RABBITMQ_DEFAULT_PASS: password
   dns:
     - 172.17.0.1 # consul
     - 8.8.8.8

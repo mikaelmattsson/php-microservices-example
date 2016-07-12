@@ -1,16 +1,17 @@
 consul:
-  command: -server -bootstrap
+  command: -server -bootstrap docker
   image: progrium/consul:latest
   ports:
-    - "8400:8400"
-    - "8500:8500"
-    - "8600:53/udp"
+    - 8400:8400
+    - 8500:8500
+    - 8600:53/udp
+    - 172.17.0.1:53:53/udp # Starting from docker 1.9.0 default docker bridge is 172.17.0.1 instead of 172.17.42.1
 
 registrator:
   command: -ip=192.168.99.100 consul://consul:8500
   image: gliderlabs/registrator:latest
   volumes:
-    - "/var/run/docker.sock:/tmp/docker.sock"
+    - /var/run/docker.sock:/tmp/docker.sock
   links:
     - consul
 
@@ -20,20 +21,41 @@ lb:
   links:
     - consul
   ports:
-    - "80:80"
+    - 80:80
   environment:
     CONSUL_URL: consul:8500
+    SERVICE_80_NAME: lb
   volumes:
     - ./lb/consul-template:/etc/consul-template
 
 # Backend Discovery service
-discovery:
-  build: ./discovery
+lbbackend:
+  build: ./lbbackend
   links:
     - consul
+    - rabbitmq
   ports:
-    - "8081:8081" # This port should not be open to the public internet
+    - 8081:8081 # This port should not be open to the public internet
   environment:
     CONSUL_URL: consul:8500
+    SERVICE_8081_NAME: lbbackend
   volumes:
-    - ./discovery/consul-template:/etc/consul-template
+    - ./lbbackend/consul-template:/etc/consul-template
+
+# Message broker
+rabbitmq:
+  image: rabbitmq:3.6-management
+  # command: semanage port -a -t http_port_t -p tcp 5672
+  environment:
+    #RABBITMQ_ERLANG_COOKIE: 'secret cookie here'
+    RABBITMQ_DEFAULT_USER: user
+    RABBITMQ_DEFAULT_PASS: password
+    RABBITMQ_DEFAULT_VHOST: _rabbitmq._amqp.service.consul
+    SERVICE_5672_NAME: rabbitmq
+    SERVICE_TAGS: amqp
+  ports:
+    - 5672:5672
+    - 15672:15672
+  volumes:
+    - ./rabbitmq/var/log:/data/log
+    - ./rabbitmq/var/mnesia:/data/mnesia
