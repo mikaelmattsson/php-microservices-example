@@ -50,7 +50,6 @@ rabbitmq:
     #RABBITMQ_ERLANG_COOKIE: 'secret cookie here'
     RABBITMQ_DEFAULT_USER: user
     RABBITMQ_DEFAULT_PASS: password
-    RABBITMQ_DEFAULT_VHOST: _rabbitmq._amqp.service.consul
     SERVICE_5672_NAME: rabbitmq
     SERVICE_TAGS: amqp
   ports:

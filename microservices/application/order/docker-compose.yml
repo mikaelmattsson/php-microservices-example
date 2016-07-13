@@ -18,7 +18,7 @@ php:
   volumes:
     - ./:/var/www/html/
   environment:
-    RABBITMQ_URL: _rabbitmq._amqp.service.consul
+    RABBITMQ_URL: rabbitmq.service.consul
     RABBITMQ_PORT: 5672
     RABBITMQ_DEFAULT_USER: user
     RABBITMQ_DEFAULT_PASS: password
