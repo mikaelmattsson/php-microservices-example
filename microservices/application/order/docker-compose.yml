@@ -1,23 +1,42 @@
-nginx:
-  image: nginx:1.10.1
+#nginx:
+#  image: nginx:1.10.1
+#  volumes:
+#    - ./docker/nginx/conf.d:/etc/nginx/conf.d
+#    - ./var/nginx-log/:/var/log/nginx
+#  volumes_from:
+#    - php
+#  links:
+#    - php:php
+#  ports:
+#    - 80
+#  environment:
+#    SERVICE_80_NAME: order2
+#    SERVICE_TAGS: backend
+#
+#php:
+#  build: ./docker/dev
+#  volumes:
+#    - ./:/var/www/html/
+#  environment:
+#    RABBITMQ_URL: rabbitmq.service.consul
+#    RABBITMQ_PORT: 5672
+#    RABBITMQ_DEFAULT_USER: user
+#    RABBITMQ_DEFAULT_PASS: password
+#  dns:
+#    - 172.17.0.1 # consul
+#    - 8.8.8.8
+
+php:
+  build: ./docker/apache-dev
   volumes:
-    - ./docker/nginx/conf.d:/etc/nginx/conf.d
-    - ./var/nginx-log/:/var/log/nginx
-  volumes_from:
-    - php
-  links:
-    - php:php
+    - ./:/var/www/html/
+    #- ./docker/apache-dev/docker-php.conf:/etc/apache2/conf-available/docker-php.conf
+    - ./docker/apache-dev/site.conf:/etc/apache2/sites-enabled/000-default.conf
   ports:
     - 80
   environment:
     SERVICE_80_NAME: order
     SERVICE_TAGS: backend
-
-php:
-  build: ./docker/dev
-  volumes:
-    - ./:/var/www/html/
-  environment:
     RABBITMQ_URL: rabbitmq.service.consul
     RABBITMQ_PORT: 5672
     RABBITMQ_DEFAULT_USER: user
