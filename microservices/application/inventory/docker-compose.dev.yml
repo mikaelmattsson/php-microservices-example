@@ -1,0 +1,3 @@
+php:
+  environment:
+    ENVIRONMENT: 'develop'

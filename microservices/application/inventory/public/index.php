@@ -1,6 +1,7 @@
 <?php
 
-echo json_encode([
-    'stock'    => 100,
-    'hostname' => getenv('HOSTNAME'),
-], JSON_PRETTY_PRINT);
+if (getenv('ENVIRONMENT') === 'develop') {
+    ini_set('opcache.enable', false);
+}
+
+require_once "../src/application.php";

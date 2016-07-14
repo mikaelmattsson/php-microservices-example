@@ -14,7 +14,21 @@ nginx:
     SERVICE_TAGS: backend
 
 php:
-  build: ./docker/dev
+  build: ./docker/php
+  volumes:
+    - ./:/var/www/html/
+  environment:
+    RABBITMQ_URL: rabbitmq.service.consul
+    RABBITMQ_PORT: 5672
+    RABBITMQ_DEFAULT_USER: user
+    RABBITMQ_DEFAULT_PASS: password
+  dns:
+    - 172.17.0.1 # consul
+    - 8.8.8.8
+
+worker_order_queue:
+  build: ./docker/worker
+  command: php /var/www/html/public/index.php --worker-order-queue
   volumes:
     - ./:/var/www/html/
   environment:

@@ -14,7 +14,7 @@ nginx:
     SERVICE_TAGS: production
 
 php:
-  build: ./docker/dev
+  build: ./docker/php
   volumes:
     - ./:/var/www/html/
   environment:
