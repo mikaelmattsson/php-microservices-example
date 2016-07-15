@@ -6,7 +6,6 @@ use PhpAmqpLib\Message\AMQPMessage;
 
 class Publisher
 {
-
     /**
      * @var AbstractQueue
      */
@@ -32,7 +31,6 @@ class Publisher
             $this->queue->isExclusive(),
             $this->queue->isAutoDelete()
         );
-
 
         $channel->basic_publish($message, '', $this->queue->getName());
 

@@ -6,7 +6,6 @@ use PhpAmqpLib\Connection\AMQPStreamConnection;
 
 class Connection extends AMQPStreamConnection
 {
-
     /**
      * Connection constructor.
      */

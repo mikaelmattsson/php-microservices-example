@@ -8,14 +8,13 @@ use PhpAmqpLib\Message\AMQPMessage;
 
 class OrderController
 {
-
     public function create()
     {
         $publisher = new Publisher(new OrderQueue());
         $publisher->publish(new AMQPMessage(time()));
 
         echo json_encode([
-            'status'   => 'created',
+            'status' => 'created',
             'hostname' => getenv('HOSTNAME'),
         ], JSON_PRETTY_PRINT);
     }

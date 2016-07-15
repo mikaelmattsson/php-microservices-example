@@ -8,19 +8,19 @@ $requests = [];
 
 if (isset($_POST['createorder'])) {
     $requests[] = [
-        'title'   => 'Response from order service (create)',
+        'title' => 'Response from order service (create)',
         'content' => file_get_contents($orderBackendUrl.'create'),
     ];
 }
 
 $requests[] = [
-    'title'   => 'Response from order service',
+    'title' => 'Response from order service',
     'content' => file_get_contents($orderBackendUrl),
 ];
 
 $requests[] = [
-    'title'   => 'Response from inventory service',
+    'title' => 'Response from inventory service',
     'content' => file_get_contents($inventoryBackendUrl),
 ];
 
-require_once "../resources/views/home.php";
+require_once '../resources/views/home.php';

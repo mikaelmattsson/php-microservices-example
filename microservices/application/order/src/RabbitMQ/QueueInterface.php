@@ -10,22 +10,22 @@ interface QueueInterface
     public function getName() : string;
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function isPassive() : bool;
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function isDurable() : bool;
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function isExclusive() : bool;
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function isAutoDelete() : bool;
 }

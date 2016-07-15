@@ -2,9 +2,8 @@
 
 namespace App\Order\RabbitMQ;
 
-class Worker
+class Consumer
 {
-
     /**
      * @var AbstractQueue
      */

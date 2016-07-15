@@ -4,7 +4,6 @@ namespace App\Order\Http\Controller;
 
 class DefaultController
 {
-
     public function index()
     {
         echo json_encode([

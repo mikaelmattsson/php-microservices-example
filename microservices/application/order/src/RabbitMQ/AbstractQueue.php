@@ -4,7 +4,6 @@ namespace App\Order\RabbitMQ;
 
 abstract class AbstractQueue implements QueueInterface
 {
-
     /**
      * Queue names may be up to 255 bytes of UTF-8 characters.
      *
@@ -51,7 +50,7 @@ abstract class AbstractQueue implements QueueInterface
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function isPassive() : bool
     {
@@ -59,7 +58,7 @@ abstract class AbstractQueue implements QueueInterface
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function isDurable() : bool
     {
@@ -67,7 +66,7 @@ abstract class AbstractQueue implements QueueInterface
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function isExclusive() : bool
     {
@@ -75,7 +74,7 @@ abstract class AbstractQueue implements QueueInterface
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function isAutoDelete() : bool
     {
